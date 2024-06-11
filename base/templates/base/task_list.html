@@ -1,0 +1,45 @@
+{% extends 'base/main.html' %} {% block content %}
+
+<div class="header-bar">
+    <div>
+        <h1>Hello {{request.user|title}}</h1>
+        <h3>You have {{count}} task{{count|pluralize:"s"}} left!</h3>
+
+        {% if request.user.is_authenticated %}
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">logout</button>
+        </form>
+        {% else %}
+        <a href="{% url 'login' %}">login</a>
+        {% endif %}
+    </div>
+</div>
+
+<hr />
+<a href="{% url 'create' %}">add item</a>
+<hr />
+
+<form method="GET">
+    <input type="text" name="search-area" value="{{search_input}}" />
+    <input type="submit" value="Search" />
+</form>
+
+<table>
+    <tr>
+        <th align="left">item</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {% for task in tasks %}
+    <tr>
+        <td>{{task.title}}</td>
+        <td><a href="{% url 'update' task.id %}">edit</a></td>
+        <td><a href="{% url 'delete' task.id %}">delete</a></td>
+    </tr>
+    {% empty %}
+    <h3>no items in list</h3>
+    {% endfor %}
+</table>
+
+{% endblock content %}
